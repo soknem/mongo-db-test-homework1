@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: test1
+
+  data:
+    mongodb:
+      host: 68.183.187.158
+      port: 28000
+      database: mongo_db_1
+      username: mongo-db
+      password: mongo-db-28000
+      authentication-database: admin

@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -101,5 +102,19 @@ public class UserServiceImpl implements UserService {
 
         return users.stream().map(userMapper::toResponse).collect(Collectors.toList());
 
+    }
+
+    private void test(){
+
+        Criteria criteria1 = Criteria.where("name").in("soknem");
+        Criteria criteria2 = Criteria.where("age").gt(12);
+
+        Query query = new Query();
+
+        query.addCriteria(criteria1);
+
+        query.addCriteria(criteria2);
+
+        mongoTemplate.find(query,User.class);
     }
 }

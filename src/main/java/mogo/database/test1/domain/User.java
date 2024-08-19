@@ -1,4 +1,4 @@
-package mogo.database.test1.user;
+package mogo.database.test1.domain;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -9,7 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
     @Id
     private String id;
+    private String uuid;
     private String name;
     private String email;
-    private int age;
+    private Integer age;
 }

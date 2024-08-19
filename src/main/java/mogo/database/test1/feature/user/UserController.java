@@ -1,5 +1,6 @@
 package mogo.database.test1.feature.user;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mogo.database.test1.base.BaseFilter;
 import mogo.database.test1.domain.User;
@@ -33,12 +34,12 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUser(@RequestBody UserRequest user) {
+    public void createUser(@Valid @RequestBody UserRequest user) {
         userService.createUser(user);
     }
 
     @PutMapping("/{uuid}")
-    public UserResponse updateUser(@PathVariable String uuid, @RequestBody UserUpdateRequest user) {
+    public UserResponse updateUser(@PathVariable String uuid,@Valid @RequestBody UserUpdateRequest user) {
         return userService.updateUser(uuid, user);
     }
 

@@ -2,11 +2,18 @@ spring:
   application:
     name: test1
 
+  profiles:
+    active: dev
+
   data:
     mongodb:
-      host: 68.183.187.158
-      port: 28000
-      database: mongo_db_1
-      username: mongo-db
-      password: mongo-db-28000
-      authentication-database: admin
+      host: ${DB_HOST}
+      port: ${DB_PORT}
+      database: ${DB_NAME}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      authentication-database: ${AUTHENTICATION-DATABASE}
+
+springdoc:
+  swagger-ui:
+    path: /

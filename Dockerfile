@@ -8,7 +8,7 @@ RUN gradle build --no-daemon -x test
 FROM openjdk:17-alpine
 WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar app.jar
-EXPOSE 7777
+EXPOSE 8080
 VOLUME /home/istad/media
 VOLUME /keys
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=dev", "app.jar"]

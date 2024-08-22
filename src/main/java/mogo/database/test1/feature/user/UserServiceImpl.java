@@ -106,8 +106,8 @@ public class UserServiceImpl implements UserService {
 
     private void test(){
 
-        Criteria criteria1 = Criteria.where("name").in("soknem");
-        Criteria criteria2 = Criteria.where("age").gt(12);
+        Criteria criteria1 = Criteria.where("columnName").in("value");
+        Criteria criteria2 = Criteria.where("name").gt(12);
 
         Query query = new Query();
 

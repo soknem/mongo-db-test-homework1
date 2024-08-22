@@ -30,7 +30,7 @@ public class BaseFilter<T> {
 
         List<Criteria> criteriaList = new ArrayList<>();
         for (FilterDto.SpecsDto specs : filterDto.getSpecsDto()) {
-            criteriaList.add(createCriteria(specs,entityClass));
+                criteriaList.add(createCriteria(specs,entityClass));
         }
 
         Criteria criteria = new Criteria();
@@ -50,7 +50,7 @@ public class BaseFilter<T> {
             case EQUAL:
                 return Criteria.where(specs.getColumn()).is(parseValue(entityClass,specs.getColumn(),specs.getValue()));
             case LIKE:
-                return Criteria.where(specs.getColumn()).regex(".*" + parseValue(entityClass,specs.getColumn(),specs.getValue()) + ".*", "i");
+                return Criteria.where(specs.getColumn()).regex(".*" + parseValue(entityClass, specs.getColumn(), specs.getValue()) + ".*", "i");
             case IN:
                 return Criteria.where(specs.getColumn()).in(parseValue(entityClass,specs.getColumn(),specs.getValue()));
             case GREATER_THAN:
@@ -104,29 +104,6 @@ public class BaseFilter<T> {
         }
     }
 
-//    public Query createSortCriteria(Query query,FilterDto filterDto){
-//        // Build Sort object dynamically
-//        if (filterDto.getSortBy() != null && filterDto.getSortDirection() != null) {
-//            Sort.Direction direction = filterDto.getSortDirection().equalsIgnoreCase("DESC") ?
-//                    Sort.Direction.DESC : Sort.Direction.ASC;
-//
-//            Sort sort = Sort.by(direction, filterDto.getSortBy());
-//            query.with(sort);
-//        }
-//
-//        return query;
-//    }
-//
-//    public Query createPageCriteria(Query query,FilterDto filterDto){
-//
-//        // Add pagination
-//        if (filterDto.getPageNumber() != null && filterDto.getPageSize() != null) {
-//            Pageable pageable = PageRequest.of(filterDto.getPageNumber(), filterDto.getPageSize());
-//            query.with(pageable);
-//        }
-//
-//        return query;
-//    }
 
     @Getter
     @Setter

@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mogo.database.test1.base.BaseFilter;
 import mogo.database.test1.feature.course.dto.*;
+import mogo.database.test1.feature.section.dto.SectionRequest;
 import mogo.database.test1.feature.section.dto.SectionResponse;
 import mogo.database.test1.feature.video.dto.VideoRequest;
 import mogo.database.test1.feature.video.dto.VideoResponse;
@@ -140,6 +141,13 @@ public class CourseController {
     public List<SectionResponse> getAllSections(@PathVariable String id) {
 
         return courseService.getAllSections(id);
+    }
+
+
+    @PostMapping("/{courseId}/sections")
+    public void createSection(@PathVariable String courseId, @RequestBody SectionRequest sectionRequest) {
+
+        courseService.createSection(courseId,sectionRequest);
     }
 
     @GetMapping("/filter")

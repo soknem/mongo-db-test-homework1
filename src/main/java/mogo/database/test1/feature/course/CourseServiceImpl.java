@@ -8,6 +8,7 @@ import mogo.database.test1.domain.Section;
 import mogo.database.test1.domain.Video;
 import mogo.database.test1.feature.course.dto.*;
 import mogo.database.test1.feature.section.SectionRepository;
+import mogo.database.test1.feature.section.dto.SectionRequest;
 import mogo.database.test1.feature.section.dto.SectionResponse;
 import mogo.database.test1.feature.video.dto.VideoRequest;
 import mogo.database.test1.feature.video.dto.VideoResponse;
@@ -236,6 +237,17 @@ public class CourseServiceImpl implements CourseService {
         List<Section> sections = sectionRepository.findAllByCourseName(course.getTitle());
 
         return sections.stream().map(sectionMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public void createSection(String courseId, SectionRequest sectionRequest) {
+
+        Course course =
+                courserRepository.findById(courseId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("course  = %s has not been found",courseId)));
+
+        Section section = sectionMapper.fromRequest(sectionRequest);
+
+        sectionRepository.save(section);
     }
 
     @Override

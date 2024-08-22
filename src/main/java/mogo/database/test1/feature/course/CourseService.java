@@ -1,7 +1,9 @@
 package mogo.database.test1.feature.course;
 
 import mogo.database.test1.base.BaseFilter;
+import mogo.database.test1.domain.Section;
 import mogo.database.test1.feature.course.dto.*;
+import mogo.database.test1.feature.section.dto.SectionRequest;
 import mogo.database.test1.feature.section.dto.SectionResponse;
 import mogo.database.test1.feature.video.dto.VideoRequest;
 import mogo.database.test1.feature.video.dto.VideoResponse;
@@ -38,6 +40,8 @@ public interface CourseService {
     VideoResponse updateVideo(String id, VideoUpdateRequest videoUpdateRequest);
 
     List<SectionResponse> getAllSections(String id);
+
+    void createSection(String courseId, SectionRequest sectionRequest);
 
     Page<CourseResponse> filterCourseByBody(String responseType,BaseFilter.FilterDto filterDto,int pageNumber,
                                             int pageSize);

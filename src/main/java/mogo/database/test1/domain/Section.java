@@ -17,7 +17,7 @@ public class Section {
 
     private Integer orderNo;
 
-    private String courseName;
+    private String courseId;
 
     private List<Video> videos;
 

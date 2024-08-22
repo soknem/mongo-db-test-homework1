@@ -3,6 +3,7 @@ package mogo.database.test1.mapper;
 import mogo.database.test1.domain.Course;
 import mogo.database.test1.domain.Section;
 import mogo.database.test1.feature.course.dto.CourseUpdateRequest;
+import mogo.database.test1.feature.section.dto.SectionDetailResponse;
 import mogo.database.test1.feature.section.dto.SectionRequest;
 import mogo.database.test1.feature.section.dto.SectionResponse;
 import mogo.database.test1.feature.section.dto.SectionUpdateRequest;
@@ -17,6 +18,8 @@ public interface SectionMapper {
     Section fromRequest(SectionRequest sectionRequest);
 
     SectionResponse toResponse(Section section);
+
+    SectionDetailResponse toSectionDetailResponse(Section section);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateSectionFromRequest(@MappingTarget Section section, SectionUpdateRequest sectionUpdateRequest);

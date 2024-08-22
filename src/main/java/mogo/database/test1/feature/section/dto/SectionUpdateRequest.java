@@ -10,7 +10,7 @@ public record SectionUpdateRequest(
 
         Integer orderNo,
 
-        String courseName,
+        String courseId,
 
         List<Video> videos
 ) {

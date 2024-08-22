@@ -109,14 +109,14 @@ public class CategoryServiceImpl implements CategoryService{
     public List<CategoryPopularResponse> getPopularCategories() {
 
         // Group courses by categoryName and count them
-        GroupOperation groupByCategory = Aggregation.group("categoryName")
+        GroupOperation groupByCategory = Aggregation.group("categoryId")
                 .count().as("totalCourse");
 
         // Sort by the course count in descending order
         SortOperation sortByCourseCountDesc = Aggregation.sort(Sort.by(Sort.Direction.DESC, "totalCourse"));
 
         // Lookup the category details from the categories collection
-        LookupOperation lookupCategory = Aggregation.lookup("categories", "categoryName", "title", "category");
+        LookupOperation lookupCategory = Aggregation.lookup("categories", "categoryId", "title", "category");
 
         // Project the fields we want in the output
         ProjectionOperation project = Aggregation.project()
@@ -134,6 +134,7 @@ public class CategoryServiceImpl implements CategoryService{
         );
 
         // Execute the aggregation
+
         AggregationResults<CategoryPopularResponse> result = mongoTemplate.aggregate(aggregation, "courses", CategoryPopularResponse.class);
         return result.getMappedResults();
     }

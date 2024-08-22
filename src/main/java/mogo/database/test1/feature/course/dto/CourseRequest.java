@@ -23,7 +23,7 @@ public record CourseRequest(
 
         String description,
 
-        String categoryName,
+        String categoryId,
 
         String content
 ) {

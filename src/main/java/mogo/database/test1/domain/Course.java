@@ -34,14 +34,14 @@ public class Course {
 
     private String description;
 
-    private String categoryName;
-
     private String content;
 
     private Boolean isDeleted;
 
     private LocalDateTime updatedAt;
 
-    List<Section> sectionList;
+    private String categoryId;
+
+    private List<String> sectionIds;
 
 }

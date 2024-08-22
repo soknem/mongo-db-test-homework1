@@ -9,7 +9,8 @@ import java.util.Optional;
 
 public interface SectionRepository extends MongoRepository<Section,String> {
 
-    List<Section> findAllByCourseName(String courseName);
+    List<Section> findAllByCourseId(String courseId);
 
-    Optional<Section> findByOrderNoAndCourseName(Integer orderNo,String courseName);
+    Optional<Section> findByOrderNoAndCourseId(Integer orderNo,String courseId);
+
 }

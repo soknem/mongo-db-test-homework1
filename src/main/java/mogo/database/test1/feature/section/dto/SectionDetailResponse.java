@@ -11,7 +11,7 @@ public record SectionDetailResponse(
 
         Integer orderNo,
 
-        String courseName,
+        String courseId,
 
         List<Video> videos
 ) {

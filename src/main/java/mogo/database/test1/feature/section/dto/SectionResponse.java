@@ -11,6 +11,6 @@ public record SectionResponse(
 
         Integer orderNo,
 
-        String courseName
+        String courseId
         ) {
 }

@@ -8,6 +8,7 @@ import mogo.database.test1.domain.Section;
 import mogo.database.test1.domain.Video;
 import mogo.database.test1.feature.course.dto.*;
 import mogo.database.test1.feature.section.SectionRepository;
+import mogo.database.test1.feature.section.dto.SectionDetailResponse;
 import mogo.database.test1.feature.section.dto.SectionRequest;
 import mogo.database.test1.feature.section.dto.SectionResponse;
 import mogo.database.test1.feature.video.dto.VideoRequest;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +74,14 @@ public class CourseServiceImpl implements CourseService {
         Page<Course> coursePage = courserRepository.findAll(pageRequest);
 
         if (responseType.equalsIgnoreCase("content_details")) {
-            return coursePage.map(courseMapper::toCourseDetailResponse);
+
+            return coursePage.map((course) -> {
+
+                List<SectionDetailResponse> sections = sectionRepository.findAllByCourseId(course.getId()).stream().map(sectionMapper::toSectionDetailResponse).toList();
+
+                return courseMapper.toCourseDetailResponse(course, sections);
+            });
+
         } else {
             return coursePage.map(courseMapper::toCourseSnippetResponse);
         }
@@ -87,7 +96,11 @@ public class CourseServiceImpl implements CourseService {
                         String.format("course = %s has not been found", id)));
 
         if (responseType.equalsIgnoreCase("content_details")) {
-            return courseMapper.toCourseDetailResponse(course);
+
+            List<SectionDetailResponse> sections = sectionRepository.findAllByCourseId(course.getId()).stream().map(sectionMapper::toSectionDetailResponse).toList();
+
+            return courseMapper.toCourseDetailResponse(course, sections);
+
         } else {
             return courseMapper.toCourseSnippetResponse(course);
         }
@@ -105,7 +118,11 @@ public class CourseServiceImpl implements CourseService {
         courserRepository.save(course);
 
         if (responseType.equalsIgnoreCase("content_details")) {
-            return courseMapper.toCourseDetailResponse(course);
+
+            List<SectionDetailResponse> sections = sectionRepository.findAllByCourseId(course.getId()).stream().map(sectionMapper::toSectionDetailResponse).toList();
+
+            return courseMapper.toCourseDetailResponse(course, sections);
+
         } else {
             return courseMapper.toCourseSnippetResponse(course);
         }
@@ -193,7 +210,7 @@ public class CourseServiceImpl implements CourseService {
                         String.format("course = %s has not been found", id)));
 
         Section section =
-                sectionRepository.findByOrderNoAndCourseName(videoRequest.sectionOrderNo(),course.getTitle()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("section with orderNo =  %s has not been found", videoRequest.sectionOrderNo())));
+                sectionRepository.findByOrderNoAndCourseId(videoRequest.sectionOrderNo(), course.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("section with orderNo =  %s has not been found", videoRequest.sectionOrderNo())));
 
         Video video = videoMapper.fromRequest(videoRequest);
 
@@ -210,7 +227,8 @@ public class CourseServiceImpl implements CourseService {
                         String.format("course = %s has not been found", id)));
 
         Section section =
-                sectionRepository.findByOrderNoAndCourseName(videoUpdateRequest.sectionOrderNo(), course.getTitle()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("section with orderNo =  %s and courseId = %s has not been found", videoUpdateRequest.sectionOrderNo(), course.getTitle())));
+                sectionRepository.findByOrderNoAndCourseId(videoUpdateRequest.sectionOrderNo(),
+                        course.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("section with orderNo =  %s and courseId = %s has not been found", videoUpdateRequest.sectionOrderNo(), course.getTitle())));
 
         // Find and update the video in the section
         Video video = section.getVideos().stream()
@@ -218,7 +236,7 @@ public class CourseServiceImpl implements CourseService {
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         String.format("video with order = %s in section = %s of course =%s has not been found",
-                                videoUpdateRequest.orderNo(),section.getId(),course.getId())));
+                                videoUpdateRequest.orderNo(), section.getId(), course.getId())));
 
         videoMapper.updateVideoFromRequest(video, videoUpdateRequest);
 
@@ -234,7 +252,7 @@ public class CourseServiceImpl implements CourseService {
                 courserRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         String.format("course =  %s has not been found", id)));
 
-        List<Section> sections = sectionRepository.findAllByCourseName(course.getTitle());
+        List<Section> sections = sectionRepository.findAllByCourseId(course.getId());
 
         return sections.stream().map(sectionMapper::toResponse).collect(Collectors.toList());
     }
@@ -243,7 +261,7 @@ public class CourseServiceImpl implements CourseService {
     public void createSection(String courseId, SectionRequest sectionRequest) {
 
         Course course =
-                courserRepository.findById(courseId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,String.format("course  = %s has not been found",courseId)));
+                courserRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("course  = %s has not been found", courseId)));
 
         Section section = sectionMapper.fromRequest(sectionRequest);
 
@@ -264,7 +282,13 @@ public class CourseServiceImpl implements CourseService {
         Page<Course> coursePage = (Page<Course>) mongoTemplate.find(query, Course.class);
 
         if (responseType.equalsIgnoreCase("content_details")) {
-            return coursePage.map(courseMapper::toCourseDetailResponse);
+
+            return coursePage.map((course) -> {
+
+                List<SectionDetailResponse> sections = sectionRepository.findAllByCourseId(course.getId()).stream().map(sectionMapper::toSectionDetailResponse).toList();
+
+                return courseMapper.toCourseDetailResponse(course, sections);
+            });
         } else {
             return coursePage.map(courseMapper::toCourseSnippetResponse);
         }
@@ -284,7 +308,13 @@ public class CourseServiceImpl implements CourseService {
         Page<Course> coursePage = (Page<Course>) mongoTemplate.find(query, Course.class);
 
         if (responseType.equalsIgnoreCase("content_details")) {
-            return coursePage.map(courseMapper::toCourseDetailResponse);
+
+            return coursePage.map((course) -> {
+
+                List<SectionDetailResponse> sections = sectionRepository.findAllByCourseId(course.getId()).stream().map(sectionMapper::toSectionDetailResponse).toList();
+
+                return courseMapper.toCourseDetailResponse(course, sections);
+            });
         } else {
             return coursePage.map(courseMapper::toCourseSnippetResponse);
         }
@@ -298,7 +328,10 @@ public class CourseServiceImpl implements CourseService {
                         String.format("course with slug =  %s has not been found", slug)));
 
         if (responseType.equalsIgnoreCase("content_details")) {
-            return courseMapper.toCourseDetailResponse(course);
+
+            List<SectionDetailResponse> sections = sectionRepository.findAllByCourseId(course.getId()).stream().map(sectionMapper::toSectionDetailResponse).toList();
+
+            return courseMapper.toCourseDetailResponse(course, sections);
         } else {
             return courseMapper.toCourseSnippetResponse(course);
         }
@@ -314,7 +347,13 @@ public class CourseServiceImpl implements CourseService {
         Page<Course> coursePage = courserRepository.findAllByIsDraftedFalse(pageRequest);
 
         if (responseType.equalsIgnoreCase("content_details")) {
-            return coursePage.map(courseMapper::toCourseDetailResponse);
+
+            return coursePage.map((course) -> {
+
+                List<SectionDetailResponse> sections = sectionRepository.findAllByCourseId(course.getId()).stream().map(sectionMapper::toSectionDetailResponse).toList();
+
+                return courseMapper.toCourseDetailResponse(course, sections);
+            });
         } else {
             return coursePage.map(courseMapper::toCourseSnippetResponse);
         }
@@ -330,7 +369,13 @@ public class CourseServiceImpl implements CourseService {
         Page<Course> coursePage = courserRepository.findAllByIsDraftedTrue(pageRequest);
 
         if (responseType.equalsIgnoreCase("content_details")) {
-            return coursePage.map(courseMapper::toCourseDetailResponse);
+
+            return coursePage.map((course) -> {
+
+                List<SectionDetailResponse> sections = sectionRepository.findAllByCourseId(course.getId()).stream().map(sectionMapper::toSectionDetailResponse).toList();
+
+                return courseMapper.toCourseDetailResponse(course, sections);
+            });
         } else {
             return coursePage.map(courseMapper::toCourseSnippetResponse);
         }
@@ -346,7 +391,13 @@ public class CourseServiceImpl implements CourseService {
         Page<Course> coursePage = courserRepository.findAllByInstructorName(instructorName, pageRequest);
 
         if (responseType.equalsIgnoreCase("content_details")) {
-            return coursePage.map(courseMapper::toCourseDetailResponse);
+
+            return coursePage.map((course) -> {
+
+                List<SectionDetailResponse> sections = sectionRepository.findAllByCourseId(course.getId()).stream().map(sectionMapper::toSectionDetailResponse).toList();
+
+                return courseMapper.toCourseDetailResponse(course, sections);
+            });
         } else {
             return coursePage.map(courseMapper::toCourseSnippetResponse);
         }
@@ -362,7 +413,13 @@ public class CourseServiceImpl implements CourseService {
         Page<Course> coursePage = courserRepository.findAllByPriceLessThanEqual(0.0, pageRequest);
 
         if (responseType.equalsIgnoreCase("content_details")) {
-            return coursePage.map(courseMapper::toCourseDetailResponse);
+
+            return coursePage.map((course) -> {
+
+                List<SectionDetailResponse> sections = sectionRepository.findAllByCourseId(course.getId()).stream().map(sectionMapper::toSectionDetailResponse).toList();
+
+                return courseMapper.toCourseDetailResponse(course, sections);
+            });
         } else {
             return coursePage.map(courseMapper::toCourseSnippetResponse);
         }

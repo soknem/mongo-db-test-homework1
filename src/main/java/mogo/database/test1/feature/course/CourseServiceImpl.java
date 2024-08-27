@@ -265,6 +265,7 @@ public class CourseServiceImpl implements CourseService {
 
         Section section = sectionMapper.fromRequest(sectionRequest);
 
+
         sectionRepository.save(section);
     }
 

@@ -17,3 +17,14 @@ spring:
 springdoc:
   swagger-ui:
     path: /
+minio:
+  url: ${MINIO_URL}
+  secret-key: ${MINIO_SECRETE_KEY}
+  bucket-name: ${MINIO_BUCKET}
+  access-key: ${MINIO_ACCESS_KEY}
+
+media:
+  #media endpoint
+  end-point: ${MEDIA_ENDPOINT}
+  #the host that handle show image
+  base-uri: ${MEDIA_BASE_URI}
